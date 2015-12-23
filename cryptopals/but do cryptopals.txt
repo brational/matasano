@@ -1,0 +1,21 @@
+but do cryptopals
+my thoughts for cryptopals:
+write clean functions for a lot of the stuff and put them in a "utils" file somewhere - you'll be using them a lot
+
+dont spend too much time on the first 6 (for #3 / #6 you can write a nice scoring function _really quickly_ - dont bust your balls)
+use python
+(for problem 7 and onward, download PyCrypto and use that for AES ("pip install pycrypto"))
+
+dont do problem 19
+lol
+
+ask me about problem 23 when you get there (this was the only problem I had to cheat on when I was doing them)
+
+how about i get through set 1 first
+
+Alex Balducci (iamalexalright@gmail.com, Alex.j.balducci@gmail.com, baronvonolek@gmail.com)
+lol yeah
+
+first 6 are fun and should be relatively simple but people get hung up on them (as the comment on the cryptopals site says, it took me 2 weeks to do)
+but then you start getting into the real cool stuff (block cipher modes)
+so id suggest muscling through them
