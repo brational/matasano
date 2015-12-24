@@ -6,6 +6,7 @@ utils file for useful functions
 
 import base64
 from Crypto.Cipher import AES
+import random
 
 
 def hexToBase64(hexString):
@@ -179,3 +180,40 @@ def cbcDecrypt(msg, key, iv):
     dMsg = RemovePad(dMsg, thePad)
     return dMsg
 
+def RandAESkey(keyLen):
+    randKey = ''
+    for k in xrange(0, keyLen):
+        bb = random.randint(0, 255)
+        randKey = randKey + chr(bb)
+
+    return randKey
+
+def EncryptionOracle(msgIn):
+    keySize = 16
+    key = RandAESkey(keySize)    
+    initVec = RandAESkey(keySize)
+    randBefore = ''
+    randAfter = ''
+    beforeCt = random.randint(5,10)
+    afterCt = random.randint(5,10)
+    for idb in xrange(0, beforeCt):
+        randBefore = randBefore + chr(random.randint(0,255))
+    for ida in xrange(0, afterCt):
+        randAfter = randAfter + chr(random.randint(0,255))
+
+    padmsg = randBefore + msgIn + randAfter
+    
+    aesMode = random.randint(0,1)
+    if len(padmsg) % keySize != 0:        
+        thePad = GetPad(padmsg, keySize)
+        padmsg = padmsg + thePad
+
+    if aesMode == 0:
+        cipher = AES.new(key, AES.MODE_ECB)
+        eMsg = cipher.encrypt(padmsg)
+        return eMsg, 'ecb'
+    elif aesMode == 1:
+        cipher = AES.new(key, AES.MODE_CBC, initVec)
+        eMsg = cipher.encrypt(padmsg)
+        return eMsg, 'cbc'
+    
