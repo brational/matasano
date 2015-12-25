@@ -45,18 +45,25 @@ def DetectEncryptionType(msgIn, blockSize):
 def main():
     blockLen = 16
 
-    with open('funky.txt', 'r') as txtfile:
+    with open('testfile.txt', 'r') as txtfile:
         data=txtfile.read()
 
-    trials = 10
+    trials = 100
     truths = ['']*trials
     guesses = ['']*trials
+    numCorrect = 0
     for idx in xrange(0, trials):
         emsg, eType = cu.EncryptionOracle(data)
         guess = DetectEncryptionType(emsg, blockLen)
         truths[idx] = eType
-        guesses[idx] = guess
-        print truths[idx] + ' || ' + guesses[idx]
+        guesses[idx] = guess        
+        if eType == guess:
+            print truths[idx] + ' || ' + guesses[idx] + ' || correct!'
+            numCorrect = numCorrect + 1
+        else:
+            print truths[idx] + ' || ' + guesses[idx] + ' || wrong.'
+
+    print "success rate: " + str(1.0 * numCorrect / trials)
 
 
 main()
