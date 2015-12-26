@@ -188,32 +188,25 @@ def RandAESkey(keyLen):
 
     return randKey
 
-def EncryptionOracle(msgIn):
-    keySize = 16
-    key = RandAESkey(keySize)    
-    initVec = RandAESkey(keySize)
-    randBefore = ''
-    randAfter = ''
-    beforeCt = random.randint(5,10)
-    afterCt = random.randint(5,10)
-    for idb in xrange(0, beforeCt):
-        randBefore = randBefore + chr(random.randint(0,255))
-    for ida in xrange(0, afterCt):
-        randAfter = randAfter + chr(random.randint(0,255))
+def RandAESkeyLimited(keyLen):
+    randKey = ''
+    for k in xrange(0, keyLen):
+        bb = random.randint(97, 122)
+        randKey = randKey + chr(bb)
 
-    padmsg = randBefore + msgIn + randAfter
+    return randKey
+   
+def DetectEncryptionType(msgIn, blockSize):
+    numBlocks = len(msgIn) / blockSize
     
-    aesMode = random.randint(0,1)
-    if len(padmsg) % keySize != 0:        
-        thePad = GetPad(padmsg, keySize)
-        padmsg = padmsg + thePad
+    blocks = []
+    for k in xrange(0, numBlocks):            
+        sub = msgIn[k*blockSize : (k+1)*blockSize]            
+        blocks.append(sub)
 
-    if aesMode == 0:
-        cipher = AES.new(key, AES.MODE_ECB)
-        eMsg = cipher.encrypt(padmsg)
-        return eMsg, 'ecb'
-    elif aesMode == 1:
-        cipher = AES.new(key, AES.MODE_CBC, initVec)
-        eMsg = cipher.encrypt(padmsg)
-        return eMsg, 'cbc'
-    
+    blockSet = set(blocks)        
+    if len(blockSet) != numBlocks:              
+        return 'ecb'
+    else:
+        return 'cbc'
+

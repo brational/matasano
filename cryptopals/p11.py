@@ -24,7 +24,8 @@ tells you which one is happening.
 '''
 
 import cutils as cu
-
+import random
+from Crypto.Cipher import AES
 
 def DetectEncryptionType(msgIn, blockSize):
     numBlocks = len(msgIn) / blockSize
@@ -41,8 +42,36 @@ def DetectEncryptionType(msgIn, blockSize):
     else:
         return 'cbc'
 
+def EncryptionOracle(msgIn):
+    keySize = 16
+    key = cu.RandAESkey(keySize)    
+    initVec = cu.RandAESkey(keySize)
+    randBefore = ''
+    randAfter = ''
+    beforeCt = random.randint(5,10)
+    afterCt = random.randint(5,10)
+    for idb in xrange(0, beforeCt):
+        randBefore = randBefore + chr(random.randint(0,255))
+    for ida in xrange(0, afterCt):
+        randAfter = randAfter + chr(random.randint(0,255))
 
-def main():
+    padmsg = randBefore + msgIn + randAfter
+    
+    aesMode = random.randint(0,1)
+    if len(padmsg) % keySize != 0:        
+        thePad = cu.GetPad(padmsg, keySize)
+        padmsg = padmsg + thePad
+
+    if aesMode == 0:
+        cipher = AES.new(key, AES.MODE_ECB)
+        eMsg = cipher.encrypt(padmsg)
+        return eMsg, 'ecb'
+    elif aesMode == 1:
+        cipher = AES.new(key, AES.MODE_CBC, initVec)
+        eMsg = cipher.encrypt(padmsg)
+        return eMsg, 'cbc'
+
+def Main():
     blockLen = 16
 
     with open('testfile.txt', 'r') as txtfile:
@@ -53,7 +82,7 @@ def main():
     guesses = ['']*trials
     numCorrect = 0
     for idx in xrange(0, trials):
-        emsg, eType = cu.EncryptionOracle(data)
+        emsg, eType = EncryptionOracle(data)
         guess = DetectEncryptionType(emsg, blockLen)
         truths[idx] = eType
         guesses[idx] = guess        
@@ -66,4 +95,4 @@ def main():
     print "success rate: " + str(1.0 * numCorrect / trials)
 
 
-main()
+Main()
