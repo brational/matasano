@@ -32,12 +32,26 @@ def encodeProfile(profileIn):
     return encodedP
 
 def profile_for(stringIn):
+    clean = ''
+    for k in stringIn:
+        if k == '=' or k == '&':
+            break
+        else:
+            clean += k
     prof = {}
-    prof['email'] = stringIn
+    prof['email'] = clean
     prof['uid'] = random.randint(1,100)
     prof['role'] = 'user'
 
     return encodeProfile(prof)
+
+def Oracle(key, profIn):
+    encodedProf = profile_for(profIn)
+    eMsg = cu.ecbEncrypt(encodedProf, key)
+    return eMsg
+
+def DecryptAndParse(msg):
+    pass
 
 def Main():
 
@@ -45,7 +59,10 @@ def Main():
     #formatted = ParseCookie(cookieString)
     #print formatted
 
-    p = profile_for('foo@bar.com')
-    print p
+    theKey = cu.RandAESkey(16)
+
+    msg = Oracle(theKey, "foo@bar.com")
+    print msg
+    print len(msg)
 
 Main()
