@@ -29,7 +29,7 @@ def StringXOR(msg1, msg2):
 
     result = ''
     for idx in xrange(0, len(msg1)):
-        result = result + chr(ord(msg1[idx]) ^ ord(msg2[idx]))
+        result += chr(ord(msg1[idx]) ^ ord(msg2[idx]))
 
     return result
 
@@ -40,7 +40,7 @@ def RepeatKeyXOR(msg, key):
     result = ''
     for idx in xrange(0, len(msg)):
         keyid = idx % repeatSegments
-        result = result + chr(ord(msg[idx]) ^ ord(key[keyid]))        
+        result += chr(ord(msg[idx]) ^ ord(key[keyid]))        
 
     return result
 
@@ -55,7 +55,7 @@ def HammingDist(str1, str2):
     for idx in xrange(0, len(str1)):
         bits = bin(ord(str1[idx]) ^ ord(str2[idx]))[2:]
         for bit in bits:
-            sumOffs = sumOffs + int(bit)
+            sumOffs += int(bit)
 
     return sumOffs
 
@@ -63,7 +63,7 @@ def oneCharXOR(rawIn, alpha):
 
     orig = ''
     for idx in xrange(0, len(rawIn)):
-        orig = orig + chr(ord(rawIn[idx]) ^ alpha)
+        orig += chr(ord(rawIn[idx]) ^ alpha)
 
     return orig
 
@@ -76,7 +76,7 @@ def ScoreString(checkstr, search):
     sumHits = 0
     for idx in xrange(0, len(checkstr)):
         if checkstr[idx] in searchList:
-            sumHits = sumHits + 2    
+            sumHits += 2    
 
     return sumHits
 
@@ -104,7 +104,7 @@ def GetPad(msg, blockSize):
         padNeeded = blockSize - remainder
         pad = ''
         for k in xrange(0, padNeeded):
-            pad = pad + 'c'
+            pad += 'c'
         return pad
 
 def ApplyPad(msg, blockSize):
@@ -123,7 +123,7 @@ def ecbEncrypt(msg, key):
 
     blockSize = len(key)
     thePad = GetPad(msg, blockSize)
-    msg = msg + thePad
+    msg += thePad
 
     cipher = AES.new(key, AES.MODE_ECB)
     eMsg = cipher.encrypt(msg)
@@ -135,7 +135,7 @@ def ecbDecrypt(msg, key):
     blockSize = len(key)
     thePad = GetPad(msg, blockSize)
     
-    msg = msg + thePad
+    msg += thePad
     
     cipher = AES.new(key, AES.MODE_ECB)
     answer = cipher.decrypt(msg)
@@ -156,7 +156,7 @@ def cbcEncrypt(msg, key, iv):
         chain = StringXOR(prevSub, sub)
         thisCipher = ecbEncrypt(chain, key)        
         prevSub = thisCipher
-        eMsg = eMsg + thisCipher
+        eMsg += thisCipher
 
     return eMsg
 
@@ -175,7 +175,7 @@ def cbcDecrypt(msg, key, iv):
         deCipher = ecbDecrypt(sub, key)
         deChain = StringXOR(deCipher, prevSub)
         prevSub = sub
-        dMsg = dMsg + deChain
+        dMsg += deChain
 
     dMsg = RemovePad(dMsg, thePad)
     return dMsg
@@ -184,7 +184,7 @@ def RandAESkey(keyLen):
     randKey = ''
     for k in xrange(0, keyLen):
         bb = random.randint(0, 255)
-        randKey = randKey + chr(bb)
+        randKey += chr(bb)
 
     return randKey
 
@@ -192,7 +192,7 @@ def RandAESkeyLimited(keyLen):
     randKey = ''
     for k in xrange(0, keyLen):
         bb = random.randint(97, 122)
-        randKey = randKey + chr(bb)
+        randKey += chr(bb)
 
     return randKey
    
