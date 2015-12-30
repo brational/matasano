@@ -104,7 +104,7 @@ def GetPad(msg, blockSize):
         padNeeded = blockSize - remainder
         pad = ''
         for k in xrange(0, padNeeded):
-            pad += 'c'
+            pad += chr(0)
         return pad
 
 def ApplyPad(msg, blockSize):

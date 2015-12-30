@@ -16,13 +16,17 @@ def ParseCookie(stringIn):
             outs[key] = val
             key = ''
             val = ''
+        elif it == chr(0):
+            next = 'done'
+            outs[key] = val        
         else:
             if next == 'key':
                 key += it
             elif next == 'val':
                 val += it
 
-    outs[key] = val #store last one
+    if next != 'done':
+        outs[key] = val
     return outs
 
 def encodeProfile(profileIn):    
@@ -40,7 +44,7 @@ def profile_for(stringIn):
             clean += k
     prof = {}
     prof['email'] = clean
-    prof['uid'] = random.randint(1,100)
+    prof['uid'] = random.randint(10,99)
     prof['role'] = 'user'
 
     return encodeProfile(prof)
@@ -50,8 +54,15 @@ def Oracle(key, profIn):
     eMsg = cu.ecbEncrypt(encodedProf, key)
     return eMsg
 
-def DecryptAndParse(msg):
-    pass
+def IsAdmin(msg, key):
+    dMsg = cu.ecbDecrypt(msg, key)
+    print dMsg
+    cookie = ParseCookie(dMsg)
+    print cookie
+    if cookie['role'] == 'admin':
+        return True
+    else:
+        return False
 
 def Main():
 
@@ -61,8 +72,14 @@ def Main():
 
     theKey = cu.RandAESkey(16)
 
-    msg = Oracle(theKey, "foo@bar.com")
-    print msg
-    print len(msg)
+    m1 = Oracle(theKey, "foody@bar.com")    
+
+    fakestr = 'm'*26 + 'admin' + chr(0)*11 
+    m2 = Oracle(theKey, fakestr)        
+
+    mm = m1[0:32] + m2[32:48]
+
+    ans = IsAdmin(mm, theKey)
+    print ans
 
 Main()
