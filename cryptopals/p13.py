@@ -16,7 +16,7 @@ def ParseCookie(stringIn):
             outs[key] = val
             key = ''
             val = ''
-        elif it == chr(0):
+        elif it == chr(4):
             next = 'done'
             outs[key] = val        
         else:
@@ -74,7 +74,7 @@ def Main():
 
     m1 = Oracle(theKey, "foody@bar.com")    
 
-    fakestr = 'm'*26 + 'admin' + chr(0)*11 
+    fakestr = 'm'*26 + 'admin' + chr(4)*11 
     m2 = Oracle(theKey, fakestr)        
 
     mm = m1[0:32] + m2[32:48]

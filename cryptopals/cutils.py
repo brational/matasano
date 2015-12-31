@@ -104,7 +104,7 @@ def GetPad(msg, blockSize):
         padNeeded = blockSize - remainder
         pad = ''
         for k in xrange(0, padNeeded):
-            pad += chr(0)
+            pad += chr(4)
         return pad
 
 def ApplyPad(msg, blockSize):
@@ -179,6 +179,13 @@ def cbcDecrypt(msg, key, iv):
 
     dMsg = RemovePad(dMsg, thePad)
     return dMsg
+
+def RandBytes(chunkSize):
+    randBytes = ''
+    for k in xrange(0, chunkSize):
+        bb = random.randint(0, 255)
+        randBytes += chr(bb)
+    return randBytes
 
 def RandAESkey(keyLen):
     randKey = ''
