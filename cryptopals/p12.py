@@ -32,7 +32,7 @@ class ECBdecryption:
             cipher = self.FeedOracle(dummy + moreDummy)          
             
             meanDist = 0;
-            
+             
             substr1 = cipher[0 : kSize]
             substr2 = cipher[kSize : 2*kSize]
             substr3 = cipher[2*kSize : 3*kSize]

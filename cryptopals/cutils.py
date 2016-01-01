@@ -104,7 +104,7 @@ def GetPad(msg, blockSize):
         padNeeded = blockSize - remainder
         pad = ''
         for k in xrange(0, padNeeded):
-            pad += chr(4)
+            pad += chr(padNeeded)
         return pad
 
 def ApplyPad(msg, blockSize):
@@ -216,4 +216,35 @@ def DetectEncryptionType(msgIn, blockSize):
         return 'ecb'
     else:
         return 'cbc'
+
+def IsValid_PKCS7(msg):
+    padLen = GetPadSize_PKCS7(msg)
+
+    expectedPad = chr(padLen) * padLen
+    actualPad = msg[-1*padLen:]
+    for idx in xrange(0, padLen):
+        if expectedPad[idx] != actualPad[idx]:
+            return False
+    return True
+
+def GetPadSize_PKCS7(msg):
+    lastByte = msg[len(msg) - 1]
+    if ord(lastByte) > 15:
+        return 0
+    else:
+        return ord(lastByte)
+
+def RemovePad_PKCS7(msg):
+    try:
+        if IsValid_PKCS7(msg):
+            padToRemove = GetPadSize_PKCS7(msg)        
+            if padToRemove == 0:
+                return msg
+            else:
+                msg = msg[:-1*padToRemove]
+                return msg
+        else:
+            raise ValueError
+    except:
+        return 'Bad Padding'
 

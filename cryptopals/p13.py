@@ -16,7 +16,8 @@ def ParseCookie(stringIn):
             outs[key] = val
             key = ''
             val = ''
-        elif it == chr(4):
+        elif ord(it) < 16:
+            print ord(it)
             next = 'done'
             outs[key] = val        
         else:
